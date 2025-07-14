@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+
 # Author Schemas
 class AuthorBaseSchema(BaseModel):
     name: str
@@ -18,6 +19,7 @@ class AuthorListSchema(AuthorBaseSchema):
     class Config:
         orm_mode = True
 
+
 # Book Schemas
 class BookBaseSchema(BaseModel):
     title: str
@@ -25,8 +27,10 @@ class BookBaseSchema(BaseModel):
     publication_date: datetime
     author = AuthorListSchema
 
+
 class BookCreateSchema(BookBaseSchema):
     pass
+
 
 class BookListSchema(BookBaseSchema):
     id: int
