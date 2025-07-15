@@ -1,39 +1,42 @@
-from datetime import datetime
+from datetime import date
+from typing import List
 
 from pydantic import BaseModel
 
 
-# Author Schemas
 class AuthorBaseSchema(BaseModel):
     name: str
     bio: str
+
+
+class AuthorRetrieveSchema(AuthorBaseSchema):
+    id: int
 
 
 class AuthorCreateSchema(AuthorBaseSchema):
     pass
 
 
-class AuthorListSchema(AuthorBaseSchema):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-# Book Schemas
 class BookBaseSchema(BaseModel):
     title: str
     summary: str
-    publication_date: datetime
-    author = AuthorListSchema
+    publication_date: date
 
 
 class BookCreateSchema(BookBaseSchema):
-    pass
+    author_id: int
 
 
 class BookListSchema(BookBaseSchema):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+
+class AuthorListSchema(AuthorBaseSchema):
+    id: int
+    books: List[BookBaseSchema]
+
+    class Config:
+        from_attributes = True
