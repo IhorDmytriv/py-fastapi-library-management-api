@@ -9,7 +9,8 @@ from crud import (
     create_author,
     create_book,
     get_author_by_id,
-    get_all_books
+    get_all_books,
+    check_author_by_name_in_db
 )
 from db.database import get_db
 from schemas import (
@@ -23,13 +24,10 @@ from schemas import (
 app = FastAPI()
 
 
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
-
-
 @app.post("/authors/", response_model=AuthorListSchema)
 def add_author(author: AuthorCreateSchema, db: Session = Depends(get_db)):
+    if check_author_by_name_in_db(db=db, author_name=author.name):
+        raise HTTPException(status_code=400, detail="Author already exists")
     return create_author(db, author)
 
 
@@ -51,6 +49,7 @@ def retrieve_author(author_id: int, db: Session = Depends(get_db)):
 
 @app.post("/books/", response_model=BookListSchema)
 def add_book(book: BookCreateSchema, db: Session = Depends(get_db)):
+
     return create_book(db, book)
 
 

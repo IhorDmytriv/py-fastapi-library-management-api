@@ -5,6 +5,10 @@ from schemas import BookCreateSchema, AuthorCreateSchema
 
 
 # Author
+def check_author_by_name_in_db(db: Session, author_name: str):
+    return db.query(models.DBAuthor).filter_by(name=author_name).first()
+
+
 def create_author(db: Session, author: AuthorCreateSchema) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
