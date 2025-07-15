@@ -46,6 +46,7 @@ def retrieve_author(author_id: int, db: Session = Depends(get_db)):
     film = get_author_by_id(db, author_id)
     if not film:
         raise HTTPException(status_code=404, detail="Author not found")
+    return film
 
 
 @app.post("/books/", response_model=BookListSchema)
