@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from db import models
-from schemas import BookCreateSchema, AuthorCreateSchema
+from app.db import models
+from app.schemas import BookCreateSchema, AuthorCreateSchema
 
 
 # Author

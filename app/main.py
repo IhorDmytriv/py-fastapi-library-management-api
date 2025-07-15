@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.params import Query
 from sqlalchemy.orm import Session
 
-from crud import (
+from app.crud import (
     get_all_authors,
     create_author,
     create_book,
@@ -12,8 +12,8 @@ from crud import (
     get_all_books,
     check_author_by_name_in_db
 )
-from db.database import get_db
-from schemas import (
+from app.db.database import get_db
+from app.schemas import (
     AuthorListSchema,
     AuthorCreateSchema,
     BookListSchema,
@@ -45,10 +45,10 @@ def list_authors(
 
 @app.get("/authors/{author_id}", response_model=AuthorRetrieveSchema)
 def retrieve_author(author_id: int, db: Session = Depends(get_db)):
-    film = get_author_by_id(db, author_id)
-    if not film:
+    author = get_author_by_id(db, author_id)
+    if not author:
         raise HTTPException(status_code=404, detail="Author not found")
-    return film
+    return author
 
 
 @app.post("/books/", response_model=BookListSchema)
