@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from db import models
@@ -21,8 +22,10 @@ def create_author(db: Session, author: AuthorCreateSchema) -> models.DBAuthor:
     return db_author
 
 
-def get_all_authors(db: Session):
-    return db.query(models.DBAuthor).all()
+def get_all_authors(db: Session, skip: int, limit: int):
+    stmt = select(models.DBAuthor).offset(skip).limit(limit)
+    result = db.execute(stmt)
+    return result.scalars().all()
 
 
 def get_author_by_id(db: Session, author_id: int):
@@ -35,11 +38,15 @@ def get_author_by_id(db: Session, author_id: int):
 
 
 # Book
-def get_all_books(db: Session, author_id: int):
-    books = db.query(models.DBBook)
+def get_all_books(db: Session, author_id: int, skip: int, limit: int):
+    stmt = select(models.DBBook)
     if author_id:
-        books = books.filter_by(author_id=author_id)
-    return books.all()
+        stmt = stmt.where(models.DBBook.author_id == author_id)
+
+    stmt = stmt.offset(skip).limit(limit)
+
+    result = db.execute(stmt)
+    return result.scalars().all()
 
 
 def create_book(db: Session, book: BookCreateSchema) -> models.DBBook:

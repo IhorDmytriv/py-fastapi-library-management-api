@@ -32,8 +32,12 @@ def add_author(author: AuthorCreateSchema, db: Session = Depends(get_db)):
 
 
 @app.get("/authors/", response_model=List[AuthorListSchema])
-def list_authors(db: Session = Depends(get_db)):
-    authors = get_all_authors(db)
+def list_authors(
+        db: Session = Depends(get_db),
+        skip: int = Query(0, ge=0),
+        limit: int = Query(10, ge=1, le=100)
+):
+    authors = get_all_authors(db=db, skip=skip, limit=limit)
     if not authors:
         raise HTTPException(status_code=404, detail="Authors not found")
     return authors
@@ -49,16 +53,22 @@ def retrieve_author(author_id: int, db: Session = Depends(get_db)):
 
 @app.post("/books/", response_model=BookListSchema)
 def add_book(book: BookCreateSchema, db: Session = Depends(get_db)):
-
     return create_book(db, book)
 
 
 @app.get("/books/", response_model=List[BookListSchema])
 def list_books(
         db: Session = Depends(get_db),
-        author_id: int = Query(None)
+        author_id: int = Query(None),
+        skip: int = Query(0, ge=0),
+        limit: int = Query(10, ge=1, le=100)
 ):
-    books = get_all_books(db, author_id)
+    books = get_all_books(
+        db=db,
+        author_id=author_id,
+        skip=skip,
+        limit=limit
+    )
     if not books:
         raise HTTPException(status_code=404, detail="Books not found")
     return books
